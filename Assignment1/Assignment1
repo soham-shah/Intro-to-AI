@@ -1,0 +1,225 @@
+class Stack:
+
+    def __init__(self):
+        self.data = []
+
+    def push(self, value):
+        self.data.append(value)  # new elements at higher list indices
+
+    def pop(self):
+        if len(self.data) >= 1:
+            ret = self.data[-1]  # save last element
+            self.data.remove(self.data[-1])
+            return ret
+        else:
+            return "Stack empty."
+
+    def checkSize(self):
+        return len(self.data)
+class Node:
+
+	#create a Node class that contains value, leftchild, rightchild,
+	#and parent attributes.
+
+	def __init__(self, intkey, l, r, p):
+		self.intkey = intkey
+		self.l = l
+		self.r = r
+		self.p = p
+
+	def getChildren(self):
+		#returns both left and right children
+		return [self.l, self.r]
+
+class Tree:
+	def __init__(self, rootkey):
+		self.root = Node(rootkey, None, None, None)
+		#create a new tree while setting root
+
+	def checkTree(self, value, parentValue, root):
+		#Recursive function that searches through tree to find
+		#if parentValue exists
+
+		if root == None:
+			#if there is no root in tree
+			return False
+		if root.intkey == parentValue:
+			if root.l == None or root.r == None:
+				#newNode = Node(value, None, None, root)
+				#root.l = newNode
+				#print("Added: ", value," Under Parent: ",root.intkey)
+				return root #newNode
+			#elif root.r == None:
+				#newNode = Node(value, None, None, root)
+				#root.r = newNode
+				#print("Added: ", value," Under Parent: ",root.intkey)
+				#return newNode
+			else:
+				print "Parent has two children, node not added."
+				return False
+		else:
+			for child in root.getChildren():
+				add_temp = self.checkTree(value, parentValue, child)
+				if add_temp:
+					return add_temp
+
+
+	def add(self, value, parentValue):
+		if self.root == None:
+			#print("Added new root")
+			newNode = Node(value, None, None, None)
+			self.root = newNode
+		if self.root.intkey == parentValue:
+			if self.root.l == None:
+				newNode = Node(value, None, None, self.root)
+				self.root.l = newNode
+				#print("Added: ", value," Under Parent: ",self.root.intkey)
+				return True
+			elif self.root.r == None:
+				newNode = Node(value, None, None, self.root)
+				self.root.r = newNode
+				#print("Added: ", value," Under Parent: ",self.root.intkey)
+				return True
+			else:
+				print "Parent has two children, node not added."
+				return False
+		else:
+			#recursively search through children
+			for child in self.root.getChildren():
+				add_node = self.checkTree(value, parentValue, child)
+				if add_node:
+					if add_node.l == None:
+						newNode = Node(value, None, None, add_node)
+						add_node.l = newNode
+					elif add_node.r == None:
+						newNode = Node(value, None, None, add_node)
+						add_node.r = newNode
+
+				#print("Added: ", value," Under Parent: ",self.root.intkey)
+
+					return add_node
+		print "Parent not found."
+		return False
+
+	def findNodeDelete(self, value, root):
+		if root == None:
+			return False
+		if value == root.intkey:
+			if root.l == None and root.r == None:
+				#print("Deleting Node", root.intkey)
+				#update parent
+				if root.p.l.intkey == value:
+					root.p.l = None
+				elif root.p.r.intkey == value:
+					root.p.r = None
+				root = None
+				return True
+			else:
+				print "Node not deleted, has children"
+				return False
+		else:
+			for child in root.getChildren():
+				delete_node = self.findNodeDelete(value, child)
+				if delete_node:
+					return delete_node
+
+
+
+	def delete(self, value):
+		if self.root == None:
+			self.root = MyNode(value, None, None, None)
+		if value == self.root.intkey:
+			if self.root.l == None and self.root.r == None:
+				#print("Deleting Root")
+				self.root = None
+				return True
+			else:
+				print "Node not deleted, has children"
+				return False
+		else:
+			for child in self.root.getChildren():
+				delete_node = self.findNodeDelete(value, child)
+				if delete_node:
+					return delete_node
+
+		print "Node not found."
+		return False
+
+	def printTree(self):
+		if self.root != None:
+			print self.root.intkey
+			for child in self.root.getChildren():
+				self.printBranch(child)
+		else:
+			return
+
+
+	def printBranch(self, root):
+		if root == None:
+			return
+		else:
+			print root.intkey
+			for child in root.getChildren():
+				self.printBranch(child)
+
+class Graph:
+    def __init__(self):
+        self.vertices = {}
+        self.edges = []
+
+    def addVertex(self, value):
+        #check if value already exists
+        if value in self.vertices:
+            print "Vertex already exists"
+        else:
+            self.vertices[value] = []
+
+    def addEdge(self, value1, value2):
+        if (value1 in self.vertices) and (value2 in self.vertices):
+            self.edges.append([value1, value2])
+        else:
+            print "One or more vertices not found."
+
+    def findVertex(self, value):
+
+        if (value in self.vertices):
+            adjList = []
+
+            for i in range(len(self.edges)):
+                if (self.edges[i][0] == value):
+                    adjList.append(self.edges[i][1])
+                elif (self.edges[i][1] == value):
+                    adjList.append(self.edges[i][0])
+            print adjList
+
+        else:
+            print "Not found."
+
+
+#some test cases
+tree = Tree(5)
+tree.add(6,5)
+tree.add(4,5)
+tree.add(7,4)
+tree.add(3,7)
+tree.add(8,4)
+tree.add(2,8)
+tree.add(9,7)
+tree.add(1,3)
+tree.add(10,3)
+tree.printTree()
+
+mystack = Stack()
+mystack.push(5)
+mystack.push(2)
+print mystack.pop()
+mystack.push(-12.5)
+print mystack.pop()
+mystack.push(3)
+print mystack.checkSize()
+
+g = Graph()
+g.addVertex(5)
+g.addVertex(10)
+g.addEdge(5,10)
+g.findVertex(5)
